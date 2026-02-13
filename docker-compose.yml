@@ -1,6 +1,27 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:18-alpine
+    container_name: fraudguard_db
+    environment:
+      POSTGRES_USER: fraudguard
+      POSTGRES_PASSWORD: FraudGuardPassword123!
+      POSTGRES_DB: fraudguard
+    volumes:
+      # Initialize database with schema
+      - ./database/01_init_schema.sql:/docker-entrypoint-initdb.d/01_init_schema.sql
+      # Persist database data (PostgreSQL 18+ uses /var/lib/postgresql)
+      - fraudguard_db_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fraudguard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   api:
     build:
       context: ./backend  # Build context is the backend folder
@@ -11,12 +32,12 @@ services:
     volumes:
       # Map the model from root to the container
       - ./models:/app/models
-      
-      # Hot-reload for code changes (Dev only)
-      - ./backend/app:/app/app
     environment:
       - MODEL_PATH=/app/models/fraud_detection_pipeline.pkl
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://fraudguard:FraudGuardPassword123!@db:5432/fraudguard
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
   web:
     build:
@@ -27,7 +48,11 @@ services:
       - "3000:3000"
     environment:
       # If fetching server-side, use the service name "api"
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+      - INTERNAL_API_URL=http://api:8000/api/v1
     depends_on:
       - api  # Wait for backend to start before starting frontend
     restart: unless-stopped
+
+volumes:
+  fraudguard_db_data:

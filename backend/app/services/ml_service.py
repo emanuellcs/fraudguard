@@ -19,15 +19,21 @@ class MLService:
             raise RuntimeError("Model not loaded")
 
         # Convert input dict to DataFrame
-        # The pipeline expects columns: 'Time', 'Amount', 'V1', 'V2', ... 'V28'
+        # The model expects columns in this order: Time, V1, V2, ..., V28, Amount
         
-        # Flatten the input
+        # Create data dict with ordered columns
         data = {
             'Time': [input_data['time']],
-            'Amount': [input_data['amount']]
         }
-        # Merge PCA features (V1-V28)
-        data.update({k: [v] for k, v in input_data['pca_features'].items()})
+        
+        # Add PCA features in correct order (V1-V28)
+        pca_features = input_data.get('pca_features', {})
+        for i in range(1, 29):  # V1 to V28
+            feature_key = f'V{i}'
+            data[feature_key] = [pca_features.get(feature_key, 0.0)]
+        
+        # Amount comes last
+        data['Amount'] = [input_data['amount']]
         
         df = pd.DataFrame(data)
         
