@@ -35,9 +35,11 @@ services:
     environment:
       - MODEL_PATH=/app/models/fraud_detection_pipeline.pkl
       - DATABASE_URL=postgresql://fraudguard:FraudGuardPassword123!@db:5432/fraudguard
+      - PYTHONDONTWRITEBYTECODE=1
     depends_on:
       db:
         condition: service_healthy
+    user: "${UID}:${GID}"
     restart: unless-stopped
   web:
     build:
