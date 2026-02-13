@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic-settings
+asyncpg
+pandas
+scikit-learn
+xgboost
+joblib
+imbalanced-learn

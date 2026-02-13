@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./backend  # Build context is the backend folder
+      dockerfile: Dockerfile
+    container_name: fraudguard_api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Map the model from root to the container
+      - ./models:/app/models
+      
+      # Hot-reload for code changes (Dev only)
+      - ./backend/app:/app/app
+    environment:
+      - MODEL_PATH=/app/models/fraud_detection_pipeline.pkl
+      - DATABASE_URL=${DATABASE_URL}
+    restart: unless-stopped
