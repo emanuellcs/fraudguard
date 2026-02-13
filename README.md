@@ -14,14 +14,14 @@ The system addresses critical challenges in financial ML, including extreme clas
 
 ## 📋 Table of Contents
 
-* [System Architecture](https://www.google.com/search?q=%23-system-architecture)
-* [Technical Stack](https://www.google.com/search?q=%23-technical-stack)
-* [ML Pipeline Strategy](https://www.google.com/search?q=%23-ml-pipeline-strategy)
-* [Installation & Deployment](https://www.google.com/search?q=%23-installation--deployment)
-* [API Reference](https://www.google.com/search?q=%23-api-reference)
-* [Project Structure](https://www.google.com/search?q=%23-project-structure)
-* [Roadmap](https://www.google.com/search?q=%23-roadmap)
-* [License](https://www.google.com/search?q=%23-license)
+- [System Architecture](#-system-architecture)
+- [Technical Stack](#-technical-stack)
+- [ML Pipeline Strategy](#-ml-pipeline-strategy)
+- [Installation & Deployment](#-installation--deployment)
+- [API Reference](#-api-reference)
+- [Project Structure](#-project-structure)
+- [Roadmap](#-roadmap)
+- [License](#-license)
 
 ## 🏗 System Architecture
 
