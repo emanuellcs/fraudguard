@@ -39,7 +39,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    user: "${UID}:${GID}"
     restart: unless-stopped
   web:
     build:
