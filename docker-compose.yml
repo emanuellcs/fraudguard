@@ -18,3 +18,16 @@ services:
       - MODEL_PATH=/app/models/fraud_detection_pipeline.pkl
       - DATABASE_URL=${DATABASE_URL}
     restart: unless-stopped
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fraudguard_web
+    ports:
+      - "3000:3000"
+    environment:
+      # If fetching server-side, use the service name "api"
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - api  # Wait for backend to start before starting frontend
+    restart: unless-stopped

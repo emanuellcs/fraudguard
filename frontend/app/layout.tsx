@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fraud Detection Dashboard",
+  title: "FraudGuard Dashboard",
   description: "A real-time dashboard for monitoring and analyzing fraudulent activities using machine learning models.",
 };
 
