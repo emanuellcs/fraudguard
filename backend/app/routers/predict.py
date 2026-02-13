@@ -1,4 +1,5 @@
 import json
+from typing import List
 from fastapi import APIRouter, HTTPException
 from app.core.models import TransactionInput, PredictionOutput
 from app.services.ml_service import ml_service
@@ -35,3 +36,28 @@ async def predict_fraud(txn: TransactionInput):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/history", response_model=List[PredictionOutput])
+async def get_history(limit: int = 10):
+    """
+    Fetches the last N transactions + predictions from the DB.
+    """
+    query = """
+        SELECT t.id as transaction_id, p.risk_score, p.prediction_class
+        FROM transactions_log t
+        JOIN fraud_predictions p ON t.id = p.transaction_id
+        ORDER BY t.created_at DESC
+        LIMIT $1;
+    """
+    
+    rows = await db.pool.fetch(query, limit)
+    
+    return [
+        PredictionOutput(
+            transaction_id=str(r['transaction_id']),
+            risk_score=r['risk_score'],
+            is_fraud=bool(r['prediction_class']),
+            status="Suspicious" if r['prediction_class'] == 1 else "Safe"
+        )
+        for r in rows
+    ]
